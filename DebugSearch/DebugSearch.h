@@ -8,6 +8,6 @@
 
 #import <AppKit/AppKit.h>
 
-@interface ___VARIABLE_classPrefix:identifier___DebugSearch : NSObject
+@interface DebugSearch : NSObject
 
 @end

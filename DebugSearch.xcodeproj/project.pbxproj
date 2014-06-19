@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		802FE8E91953585F009188E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 802FE8E81953585F009188E2 /* AppKit.framework */; };
 		802FE8EB1953585F009188E2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 802FE8EA1953585F009188E2 /* Foundation.framework */; };
-		802FE8F11953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 802FE8F01953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.m */; };
+		802FE8F11953585F009188E2 /* DebugSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 802FE8F01953585F009188E2 /* DebugSearch.m */; };
 		802FE8F31953585F009188E2 /* DebugSearch-Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 802FE8F21953585F009188E2 /* DebugSearch-Prefix.pch */; };
 		802FE8F51953585F009188E2 /* DebugSearch-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 802FE8F41953585F009188E2 /* DebugSearch-Info.plist */; };
 /* End PBXBuildFile section */
@@ -19,8 +19,8 @@
 		802FE8E81953585F009188E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		802FE8EA1953585F009188E2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		802FE8EE1953585F009188E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		802FE8EF1953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "___VARIABLE_classPrefix:identifier___DebugSearch.h"; sourceTree = "<group>"; };
-		802FE8F01953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "___VARIABLE_classPrefix:identifier___DebugSearch.m"; sourceTree = "<group>"; };
+		802FE8EF1953585F009188E2 /* DebugSearch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DebugSearch.h; sourceTree = "<group>"; };
+		802FE8F01953585F009188E2 /* DebugSearch.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DebugSearch.m; sourceTree = "<group>"; };
 		802FE8F21953585F009188E2 /* DebugSearch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DebugSearch-Prefix.pch"; sourceTree = "<group>"; };
 		802FE8F41953585F009188E2 /* DebugSearch-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DebugSearch-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -67,8 +67,8 @@
 		802FE8EC1953585F009188E2 /* DebugSearch */ = {
 			isa = PBXGroup;
 			children = (
-				802FE8EF1953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.h */,
-				802FE8F01953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.m */,
+				802FE8EF1953585F009188E2 /* DebugSearch.h */,
+				802FE8F01953585F009188E2 /* DebugSearch.m */,
 				802FE8F21953585F009188E2 /* DebugSearch-Prefix.pch */,
 				802FE8F41953585F009188E2 /* DebugSearch-Info.plist */,
 				802FE8ED1953585F009188E2 /* Supporting Files */,
@@ -152,7 +152,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				802FE8F11953585F009188E2 /* ___VARIABLE_classPrefix:identifier___DebugSearch.m in Sources */,
+				802FE8F11953585F009188E2 /* DebugSearch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +236,9 @@
 				DSTROOT = "$(HOME)";
 				INFOPLIST_FILE = DebugSearch/Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = xcplugin;
 			};
 			name = Debug;
@@ -250,6 +252,7 @@
 				INFOPLIST_FILE = DebugSearch/Info.plist;
 				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 				WRAPPER_EXTENSION = xcplugin;
 			};
 			name = Release;
@@ -273,6 +276,7 @@
 				802FE8FA1953585F009188E2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

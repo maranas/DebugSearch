@@ -8,8 +8,8 @@ Installation
 Clone, build, then restart Xcode
 
 >Usage:
->  # Type this into the debug console while you aren't debugging yet:
->  /set_filter="<filter string>"
+>    # Type this into the debug console while you aren't debugging yet:
+>    /set_filter="<filter string>"
 
 Where <filter string> is the string to filter the log messages by. All messages satisfying the filter will be displayed; the other messages will be hidden.
 

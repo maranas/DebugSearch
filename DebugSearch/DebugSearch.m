@@ -57,6 +57,9 @@ static NSString *myFilter;
                             myFilter = [cmdComponents objectAtIndex:objIndex];
                         }
                     }
+                } else if ([component hasPrefix:@"/clear_filter"]) {
+                    NSLog(@"Clear filter!");
+                    myFilter = @"";
                 }
             }
         }

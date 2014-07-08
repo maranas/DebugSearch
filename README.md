@@ -15,6 +15,10 @@ Type this into the debug console while you aren't debugging yet:
 
 Where <filter string> is the string to filter the log messages by. All messages satisfying the filter will be displayed; the other messages will be hidden.
 
+To clear the current filter, type in:
+
+    /clear_filter
+
 Limitations
 ===========      
 - No reg-ex yet.

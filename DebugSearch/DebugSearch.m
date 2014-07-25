@@ -113,7 +113,7 @@ static NSDictionary *highlightsDictionary;
             for (NSView* sview in [firstSubview subviews]) {
                 if ([sview isKindOfClass:NSClassFromString(@"DVTScrollView")]) {
                     // move this down!
-                    sview.frame = CGRectMake(sview.frame.origin.x, sview.frame.origin.y - 20.0, sview.frame.size.width, sview.frame.size.height);
+                    sview.frame = CGRectMake(sview.frame.origin.x, sview.frame.origin.y, sview.frame.size.width, sview.frame.size.height - 20.0);
                 }
             }
         }

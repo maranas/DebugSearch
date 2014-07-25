@@ -8,6 +8,6 @@
 
 #import <AppKit/AppKit.h>
 
-@interface DebugSearch : NSObject
+@interface DebugSearch : NSObject <NSTextFieldDelegate>
 
 @end

@@ -11,6 +11,7 @@
 
 static DebugSearch *sharedPlugin;
 static NSString *myFilter;
+static NSString *kFilterForDebugSearchChanged = @"kFilterForDebugSearchChanged";
 
 @interface NSTextStorage (DebugSearch)
 - (void)dbgSearch_fixAttributesInRange:(NSRange)aRange;
@@ -40,26 +41,11 @@ static NSString *myFilter;
                                         NSForegroundColorAttributeName : [NSColor clearColor]
                                         };
         for (NSString* component in components) {
-            if (myFilter.length > 0 && [component rangeOfString:myFilter].location == NSNotFound && ![component hasPrefix:@"/"])
+            if (myFilter.length > 0 && [component rangeOfString:myFilter].location == NSNotFound)
             {
                 NSRange rangeToDelete = [[self string] rangeOfString:component options:0 range:aRange];
                 if (rangeToDelete.location != NSNotFound) {
                     [self addAttributes:invisibleAttr range:rangeToDelete];
-                }
-            } else {
-                if ([component hasPrefix:@"/set_filter=\""]) {
-                    NSLog(@"Possible command!");
-                    NSArray* cmdComponents = [component componentsSeparatedByString:@"\""];
-                    if ([cmdComponents count] > 1 && ((NSString*)[cmdComponents objectAtIndex:1]).length > 0) {
-                        // get the second to the last object
-                        NSUInteger objIndex = cmdComponents.count - 2;
-                        if (objIndex < cmdComponents.count) {
-                            myFilter = [cmdComponents objectAtIndex:objIndex];
-                        }
-                    }
-                } else if ([component hasPrefix:@"/clear_filter"]) {
-                    NSLog(@"Clear filter!");
-                    myFilter = @"";
                 }
             }
         }
@@ -67,6 +53,60 @@ static NSString *myFilter;
     [self dbgSearch_fixAttributesInRange:aRange];
 }
 
+@end
+
+@interface NSViewController (DebugSearch)
+- (void)dbgSearch_loadView;
+// associated object
+@property (nonatomic, weak) NSTextField *filterText;
+// notification observer
+- (void)filterChanged;
+@end
+
+@implementation NSViewController (DebugSearch)
+- (void)setFilterText:(NSTextField *)filterText
+{
+    // doesn't need to be strong; we add it to a view anyway, which should retain it
+    objc_setAssociatedObject(self, @selector(filterText), filterText, OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (NSTextField*)filterText
+{
+    return objc_getAssociatedObject(self, @selector(filterText));
+}
+
+- (void)dbgSearch_loadView
+{
+    [self dbgSearch_loadView];
+    if ([self isKindOfClass:NSClassFromString(@"IDEConsoleArea")]) {
+        NSTextField *filterText;
+        filterText = [[NSTextField alloc] initWithFrame:CGRectZero];
+        filterText.font = [NSFont systemFontOfSize:10.0];
+        filterText.autoresizingMask = NSViewWidthSizable | NSViewMinYMargin;
+        [filterText setStringValue:myFilter];
+        filterText.delegate = sharedPlugin;
+        if (self.view.subviews.count == 1) {
+            // DVTViewControllers have only one subview in their main view, which is supposed to be the contentView.
+            NSView *firstSubview = self.view.subviews[0];
+            [firstSubview addSubview:filterText];
+            filterText.frame = CGRectMake(0, firstSubview.frame.size.height - 20.0, firstSubview.frame.size.width, 20.0);
+            NSLog(@"subviews:");
+            for (NSView* sview in [firstSubview subviews]) {
+                if ([sview isKindOfClass:NSClassFromString(@"DVTScrollView")]) {
+                    // move this down!
+                    sview.frame = CGRectMake(sview.frame.origin.x, sview.frame.origin.y - 20.0, sview.frame.size.width, sview.frame.size.height);
+                }
+            }
+        }
+        self.filterText = filterText;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterChanged) name:kFilterForDebugSearchChanged object:nil];
+    }
+}
+
+- (void)filterChanged
+{
+    [self.filterText setStringValue:myFilter];
+}
 @end
 
 @interface DebugSearch()
@@ -100,21 +140,35 @@ static NSString *myFilter;
 
 - (void)replaceMethod
 {
-    SEL origSel = @selector(fixAttributesInRange:);
-    SEL overSel = @selector(dbgSearch_fixAttributesInRange:);
-    
-    Method orig = class_getInstanceMethod([NSTextStorage class], origSel);
-    Method over = class_getInstanceMethod([NSTextStorage class], overSel);
-    if (class_addMethod([NSTextStorage class], origSel, method_getImplementation(over), method_getTypeEncoding(over))) {
-        class_replaceMethod([NSTextStorage class], overSel, method_getImplementation(orig), method_getTypeEncoding(orig));
-    } else {
-        method_exchangeImplementations(orig, over);
-    }
+    [self swizzleMethod:@selector(fixAttributesInRange:) withMethod:@selector(dbgSearch_fixAttributesInRange:) inClass:[NSTextStorage class]];
+    // try to replace the viewDidLoad method for the IDEConsoleArea
+    [self swizzleMethod:@selector(loadView) withMethod:@selector(dbgSearch_loadView) inClass:NSClassFromString(@"IDEConsoleArea")];
 }
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+// text field delegate
+- (void)controlTextDidChange:(NSNotification *)obj
+{
+    NSLog(@"Filter changed!");
+    myFilter = ((NSTextField*)[obj object]).stringValue;
+    // post a notification
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFilterForDebugSearchChanged object:nil];
+}
+
+// swizzler
+- (void)swizzleMethod:(SEL)origSel withMethod:(SEL)overSel inClass:(Class)theClass
+{
+    Method orig = class_getInstanceMethod(theClass, origSel);
+    Method over = class_getInstanceMethod(theClass, overSel);
+    if (class_addMethod(theClass, origSel, method_getImplementation(over), method_getTypeEncoding(over))) {
+        class_replaceMethod(theClass, overSel, method_getImplementation(orig), method_getTypeEncoding(orig));
+    } else {
+        method_exchangeImplementations(orig, over);
+    }
 }
 
 @end

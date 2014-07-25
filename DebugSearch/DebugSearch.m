@@ -13,6 +13,11 @@ static DebugSearch *sharedPlugin;
 static NSString *myFilter;
 static NSString *kFilterForDebugSearchChanged = @"kFilterForDebugSearchChanged";
 
+static NSString *plistFilename = @"dbgHighlightConf.plist";
+static NSString *plistConfigFolder = @".dbgSearch";
+
+static NSDictionary *highlightsDictionary;
+
 @interface NSTextStorage (DebugSearch)
 - (void)dbgSearch_fixAttributesInRange:(NSRange)aRange;
 @end
@@ -46,6 +51,21 @@ static NSString *kFilterForDebugSearchChanged = @"kFilterForDebugSearchChanged";
                 NSRange rangeToDelete = [[self string] rangeOfString:component options:0 range:aRange];
                 if (rangeToDelete.location != NSNotFound) {
                     [self addAttributes:invisibleAttr range:rangeToDelete];
+                }
+            } else if (highlightsDictionary) {
+                // highlighting
+                NSString *wantedKey = nil;
+                for (NSString* key in [highlightsDictionary allKeys]) {
+                    if ([component rangeOfString:key].location != NSNotFound) {
+                        wantedKey = key;
+                        break;
+                    }
+                }
+                if (wantedKey) {
+                    NSArray *params = highlightsDictionary[wantedKey];
+                    NSColor *textColor = [NSColor colorWithCalibratedRed:[params[0] floatValue] green:[params[1] floatValue] blue:[params[2] floatValue] alpha:[params[3] floatValue]];
+                    NSRange rangeToColor = [[self string] rangeOfString:component options:0 range:aRange];
+                    [self addAttribute:NSForegroundColorAttributeName value:textColor range:rangeToColor];
                 }
             }
         }
@@ -90,7 +110,6 @@ static NSString *kFilterForDebugSearchChanged = @"kFilterForDebugSearchChanged";
             NSView *firstSubview = self.view.subviews[0];
             [firstSubview addSubview:filterText];
             filterText.frame = CGRectMake(0, firstSubview.frame.size.height - 20.0, firstSubview.frame.size.width, 20.0);
-            NSLog(@"subviews:");
             for (NSView* sview in [firstSubview subviews]) {
                 if ([sview isKindOfClass:NSClassFromString(@"DVTScrollView")]) {
                     // move this down!
@@ -123,6 +142,20 @@ static NSString *kFilterForDebugSearchChanged = @"kFilterForDebugSearchChanged";
     if ([currentApplicationName isEqual:@"Xcode"]) {
         dispatch_once(&onceToken, ^{
             sharedPlugin = [[self alloc] initWithBundle:plugin];
+            // load the plist for highlight definitions
+            // path to plist
+            NSString *configPath = [[NSHomeDirectory() stringByAppendingPathComponent:plistConfigFolder] stringByAppendingPathComponent:plistFilename];
+            NSLog(@"Loading %@", configPath);
+            if ([[NSFileManager defaultManager] fileExistsAtPath:configPath isDirectory:NO]) {
+                highlightsDictionary = [NSDictionary dictionaryWithContentsOfFile:configPath];
+                if (!highlightsDictionary) {
+                    NSLog(@"There is something wrong with the config plist; skipping load");
+                } else {
+                    NSLog(@"Highlighting definitions loaded.");
+                }
+            } else {
+                NSLog(@"No highlighting definitions.");
+            }
         });
     }
 }

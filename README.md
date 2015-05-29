@@ -17,6 +17,8 @@ The plugin can also highlight lines of output. The highlighting definitions are 
 
     ~/.dbgSearch/dbgHighlightConf.plist
 
+*Note*: the file needs to be created manually for this feature to work!
+
 The file is a simple plist that contains a dictionary with strings as keys, and float values for R, G, B and alpha parameters (will be passed to NSColor). E.g. to color messages containing the string "ERROR" with red, your plist will look like this:
 
     <plist version="1.0">

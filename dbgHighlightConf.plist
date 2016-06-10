@@ -1,0 +1,25 @@
+<plist version="1.0">
+    <dict>
+        <key>ERROR</key>
+            <array>
+                <real>1.0</real>
+                <real>0</real>
+                <real>0</real>
+                <real>1.0</real>
+            </array>
+        <key>error</key>
+            <array>
+                <real>1.0</real>
+                <real>0</real>
+                <real>0</real>
+                <real>1.0</real>
+            </array>
+        <key>Error</key>
+            <array>
+                <real>1.0</real>
+                <real>0</real>
+                <real>0</real>
+                <real>1.0</real>
+            </array>
+    </dict>
+</plist>

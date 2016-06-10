@@ -46,7 +46,7 @@ static NSDictionary *highlightsDictionary;
                                         NSForegroundColorAttributeName : [NSColor clearColor]
                                         };
         for (NSString* component in components) {
-            if (myFilter.length > 0 && [component rangeOfString:myFilter].location == NSNotFound)
+            if (![self hasMatchInString:component])
             {
                 NSRange rangeToDelete = [[self string] rangeOfString:component options:0 range:aRange];
                 if (rangeToDelete.location != NSNotFound) {
@@ -71,6 +71,24 @@ static NSDictionary *highlightsDictionary;
         }
     }
     [self dbgSearch_fixAttributesInRange:aRange];
+}
+
+- (BOOL) hasMatchInString:(NSString*)inputString
+{
+    if (myFilter.length == 0)
+    {
+        return NO;
+    }
+    NSRange range = NSMakeRange(0, [inputString length]);
+    NSArray *tokenizedComponents = [inputString componentsSeparatedByString:@" "];
+    if (tokenizedComponents.count > 2)
+    {
+        range = [inputString rangeOfString:tokenizedComponents[3]];
+    }
+    NSError *error = nil;
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:myFilter options:0 error:&error];
+    NSArray* matches = [regex matchesInString:inputString options:0 range:range];
+    return matches.count > 0;
 }
 
 @end

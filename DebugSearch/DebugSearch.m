@@ -77,7 +77,7 @@ static NSDictionary *highlightsDictionary;
 {
     if (myFilter.length == 0)
     {
-        return NO;
+        return YES;
     }
     NSRange range = NSMakeRange(0, [inputString length]);
     NSArray *tokenizedComponents = [inputString componentsSeparatedByString:@" "];

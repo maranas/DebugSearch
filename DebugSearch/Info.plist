@@ -13,11 +13,11 @@
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>2.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2.1</string>
 	<key>DVTPlugInCompatibilityUUIDs</key>
 	<array>
 		<string>AD68E85B-441B-4301-B564-A45E4919A6AD</string>

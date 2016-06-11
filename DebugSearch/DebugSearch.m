@@ -80,10 +80,10 @@ static NSDictionary *highlightsDictionary;
         return YES;
     }
     NSRange range = NSMakeRange(0, [inputString length]);
-    NSArray *tokenizedComponents = [inputString componentsSeparatedByString:@" "];
-    if (tokenizedComponents.count > 2)
+    NSArray *tokenizedComponents = [inputString componentsSeparatedByString:@"] "];
+    if (tokenizedComponents.count > 1)
     {
-        range = [inputString rangeOfString:tokenizedComponents[3]];
+        range = [inputString rangeOfString:tokenizedComponents[1]];
     }
     NSError *error = nil;
     NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:myFilter options:0 error:&error];
